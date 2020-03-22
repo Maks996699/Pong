@@ -1,12 +1,15 @@
-#pragma once
+#ifndef Game_h
+#define Game_h
+
 #include "SDL.h"
 #include "SDL_image.h"
-#include "TextureManager.h"
 #include "GameObject.h"
-#include "Ball.h"
+#include "TextureManager.h"
 #include <iostream>
 
 class GameObject;
+class Stick;
+class Ball;
 
 class Game
 {
@@ -21,11 +24,13 @@ public:
 	void update();
 	void render();
 	void clean();
-	int getWidth();
-	int getHeight();
-	bool playerOnBorder( GameObject* obj); ////
-	bool playerCanMoveUp(GameObject* obj);
-	bool playerCanMoveDown(GameObject* obj);
+	static int getWidth();
+	static int getHeight();
+	static bool objectCanMoveUp(GameObject* obj);
+	static bool objectCanMoveDown(GameObject* obj);
+	static bool objectCanMoveLeft(GameObject* obj);
+	static bool objectCanMoveRight(GameObject* obj);
+	bool checkCollision(Stick* st, Ball* bl);
 
 	bool running();
 
@@ -35,10 +40,12 @@ public:
 private:
 	bool isRunning;
 	SDL_Window* window;
-	int width;
-	int height;
+	static int width;
+	static int height;
+
 	
 	int cnt = 0;
 
 };
 
+#endif

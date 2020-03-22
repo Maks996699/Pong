@@ -1,12 +1,15 @@
+#include "Stick.h"	//
+#include "Ball.h"   //при переносе в хедер - не определяет GameObject
 #include "Game.h"
 
+int Game::height = 0;
+int Game::width = 0;
 
-GameObject* player = nullptr;
+Stick* player = nullptr;
 Ball* ball = nullptr;
 
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
-
 
 
 Game::Game() : isRunning(false), window(nullptr)
@@ -19,8 +22,8 @@ Game::~Game()
 
 void Game::init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen)
 {
-	this->width = width;
-	this->height = height;
+	Game::width = width;
+	Game::height = height;
 
 	int flags = 0;
 	if (fullscreen)
@@ -48,10 +51,8 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 		isRunning = true;
 	}
 
-	player = new GameObject("assets/Bplayer.png", 20, 0);
+	player = new Stick("assets/Bplayer.png", 20, 0);
 	ball = new Ball("assets/ball.png", 400, 300);
-
-	
 
 }
 
@@ -66,14 +67,14 @@ void Game::handleEvents()
 		{
 		case SDLK_w:
 		{
-			if (playerCanMoveUp(player))
-				player->MoveUP();
+			if (objectCanMoveUp(player))
+				player->moveUP();
 			break;
 		}
 		case SDLK_s:
 		{
-			if (playerCanMoveDown(player))
-				player->MoveDown();
+			if (objectCanMoveDown(player))
+				player->moveDown();
 			break;
 		}
 		default:
@@ -93,15 +94,16 @@ void Game::handleEvents()
 
 void Game::update()
 {
-	player->Update();
-
+	if (checkCollision(player, ball))
+		ball->chengeStateFromCollision();
+	player->update();
 	ball->update();
 }
 
 void Game::render()
 {
 	SDL_RenderClear(renderer);
-	player->Render();
+	player->render();
 	ball->render();
 	SDL_RenderPresent(renderer);
 }
@@ -124,14 +126,8 @@ int Game::getHeight()
 	return height;
 }
 
-bool Game::playerOnBorder(GameObject* obj)
-{
-	if (obj->getY() > 0 && obj->getY() < width)
-		return false;
-	return true;
-}
 
-bool Game::playerCanMoveUp(GameObject* obj)
+bool Game::objectCanMoveUp(GameObject* obj)
 {
 	if (obj->getY() > 0)
 	{
@@ -140,12 +136,45 @@ bool Game::playerCanMoveUp(GameObject* obj)
 	return false;
 }
 
-bool Game::playerCanMoveDown(GameObject* obj)
+bool Game::objectCanMoveDown(GameObject* obj)
 {
-	if (obj->getY() + obj->getHeight() < height) {
+	if ((obj->getY() + obj->getHeight()) < Game::height) {
 		return true;
 	}
 	return false;
+}
+
+bool Game::objectCanMoveLeft(GameObject* obj)
+{
+	if (obj->getX() > 0) {
+		return true;
+	}
+	return false;
+}
+
+bool Game::objectCanMoveRight(GameObject* obj)
+{
+	if ((obj->getX() + obj->getWidth()) < Game::width)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool Game::checkCollision(Stick* st, Ball* bl)
+{
+	if (
+	st->getX() + st->getWidth() >= bl->getX() &&
+	bl->getX() + bl->getWidth() >= st->getX() &&
+	st->getY() + st->getHeight() >= bl->getY()&&
+	bl->getY() + bl->getHeight() >= st->getY()
+	)
+	{
+		return true;
+	}
+
+	return false;
+
 }
 
 bool Game::running()

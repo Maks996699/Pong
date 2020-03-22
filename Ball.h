@@ -1,30 +1,32 @@
-#pragma once
-#include "TextureManager.h"
+#ifndef Ball_h
+#define Ball_h
+#include "GameObject.h"
+
 enum class BallState {
-	Right30, Right45, Right60, Right, Right120, Right135, Right150,
-	Left30,  Left45,  Left60,  Left,  Left120,  Left135,  Left150
+	Right30, Right150, Left30, Left150, 
+	Right45, Right135, Left45, Left135, 
+	Right60, Right120, Left60, Left120,
+	Right, Left
 };
 
 
-class Ball
+class Ball : public GameObject
 {
-
 public:
 	Ball(const char* texturesheet, int x, int y);
 	~Ball();
 	void setState(BallState& state);
-
-	
 	void update();
-	void render();
+	void chengeStateFromCollision();
+	void reboundFromUp();
+	void reboundFromDown();
+	void reboundFromRight();
+	void reboundFromLeft();
+
 private:
 	int speed;
 	BallState state;
 
-	int xpos;
-	int ypos;
-	SDL_Texture* objTexture;
-	SDL_Rect srcRect, destRect;
-
 };
 
+#endif

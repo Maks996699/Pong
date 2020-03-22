@@ -1,6 +1,6 @@
 #include "GameObject.h"
 
-GameObject::GameObject(const char* texturesheet, int x, int y) 
+GameObject::GameObject(const char* texturesheet, int x, int y)
 	: objTexture(TextureManager::LoadTexture(texturesheet)), xpos(x), ypos(y)
 {
 	srcRect.x = 0;
@@ -11,20 +11,10 @@ GameObject::GameObject(const char* texturesheet, int x, int y)
 	destRect.y = y;
 	destRect.h = srcRect.h;
 	destRect.w = srcRect.w;
-
 }
 
-void GameObject::MoveUP()
+GameObject::~GameObject()
 {
-	ypos -= 10;
-	destRect.y = ypos;
-}
-
-
-void GameObject::MoveDown()
-{
-	ypos += 10;
-	destRect.y = ypos;
 }
 
 int GameObject::getX()
@@ -42,12 +32,17 @@ int GameObject::getHeight()
 	return srcRect.h;
 }
 
-void GameObject::Update()//////////////////
+int GameObject::getWidth()
+{
+	return srcRect.w;
+}
+
+void GameObject::update()//////////////////
 {
 
 }
 
-void GameObject::Render()
+void GameObject::render()
 {
 	SDL_RenderCopy(Game::renderer, objTexture, &srcRect, &destRect);
 }

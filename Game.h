@@ -30,7 +30,7 @@ public:
 	static bool objectCanMoveDown(GameObject* obj);
 	static bool objectCanMoveLeft(GameObject* obj);
 	static bool objectCanMoveRight(GameObject* obj);
-	bool checkCollision(Stick* st, Ball* bl);
+	static bool checkCollision(GameObject* obj1, GameObject* obj2);
 
 	bool running();
 

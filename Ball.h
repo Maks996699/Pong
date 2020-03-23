@@ -17,7 +17,8 @@ public:
 	~Ball();
 	void setState(BallState& state);
 	void update();
-	void chengeStateFromCollision();
+	void chengeStateFromCollisionWithPlayer();
+	void changeStateFromCollisionWithEnemy();
 	void reboundFromUp();
 	void reboundFromDown();
 	void reboundFromRight();

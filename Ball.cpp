@@ -14,7 +14,7 @@ Ball::Ball(const char* texturesheet, int x, int y)
     destRect.y = y;
     destRect.h = srcRect.h;
     destRect.w = srcRect.w;
-    state = BallState::Right30;
+    state = BallState::Right60;
     speed = 5;
 }
 
@@ -110,9 +110,14 @@ void Ball::update()
     destRect.x = xpos;
 }
 
-void Ball::chengeStateFromCollision()
+void Ball::chengeStateFromCollisionWithPlayer()
 {
     reboundFromLeft();
+}
+
+void Ball::changeStateFromCollisionWithEnemy()
+{
+    reboundFromRight();
 }
 
 void Ball::reboundFromUp()

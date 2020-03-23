@@ -6,6 +6,7 @@ int Game::height = 0;
 int Game::width = 0;
 
 Stick* player = nullptr;
+Stick* enemy = nullptr;
 Ball* ball = nullptr;
 
 SDL_Renderer* Game::renderer = nullptr;
@@ -51,8 +52,9 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 		isRunning = true;
 	}
 
-	player = new Stick("assets/Bplayer.png", 20, 0);
-	ball = new Ball("assets/ball.png", 400, 300);
+	player = new Stick("assets/BPlayer.png", 20, 0, 20);
+	enemy = new Stick("assets/BPlayer.png", width - 40, 0, 10);
+	ball = new Ball("assets/BBall.png", 400, 300);
 
 }
 
@@ -95,8 +97,26 @@ void Game::handleEvents()
 void Game::update()
 {
 	if (checkCollision(player, ball))
-		ball->chengeStateFromCollision();
+		ball->chengeStateFromCollisionWithPlayer();
+	if (checkCollision(enemy, ball))
+		ball->changeStateFromCollisionWithEnemy();
+
+	if (ball->getX() > Game::width -350)
+	{
+		int deadZone = 10;
+		int posMidStick = enemy->getY() + enemy->getHeight() / 2;
+		if (posMidStick + deadZone > ball->getY())
+		{
+			enemy->moveUP();
+		}
+		else if (posMidStick + deadZone < ball->getY())
+		{
+			enemy->moveDown();
+		}
+	}
+
 	player->update();
+	enemy->update();
 	ball->update();
 }
 
@@ -104,6 +124,7 @@ void Game::render()
 {
 	SDL_RenderClear(renderer);
 	player->render();
+	enemy->render();
 	ball->render();
 	SDL_RenderPresent(renderer);
 }
@@ -161,13 +182,14 @@ bool Game::objectCanMoveRight(GameObject* obj)
 	return false;
 }
 
-bool Game::checkCollision(Stick* st, Ball* bl)
+bool Game::checkCollision(GameObject* obj1, GameObject* obj2)
 {
+	if (obj1 == obj2) return false;
 	if (
-	st->getX() + st->getWidth() >= bl->getX() &&
-	bl->getX() + bl->getWidth() >= st->getX() &&
-	st->getY() + st->getHeight() >= bl->getY()&&
-	bl->getY() + bl->getHeight() >= st->getY()
+	obj1->getX() + obj1->getWidth() >= obj2->getX() &&
+	obj2->getX() + obj2->getWidth() >= obj1->getX() &&
+	obj1->getY() + obj1->getHeight() >= obj2->getY() &&
+	obj2->getY() + obj2->getHeight() >= obj1->getY()
 	)
 	{
 		return true;

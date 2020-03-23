@@ -7,7 +7,7 @@ class Stick : public GameObject
 {
 
 public:
-	Stick(const char* texturesheet, int x, int y);
+	Stick(const char* texturesheet, int x, int y, int speed);
 	~Stick();
 
 	void moveUP();

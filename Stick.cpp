@@ -1,6 +1,6 @@
 #include "Stick.h"
 
-Stick::Stick(const char* texturesheet, int x, int y)
+Stick::Stick(const char* texturesheet, int x, int y, int speed)
 	: GameObject(texturesheet, x, y)
 {
 	srcRect.x = 0;
@@ -11,7 +11,7 @@ Stick::Stick(const char* texturesheet, int x, int y)
 	destRect.y = y;
 	destRect.h = srcRect.h;
 	destRect.w = srcRect.w;
-	speed = 20;
+	this->speed = speed;
 
 }
 

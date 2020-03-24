@@ -8,12 +8,13 @@ class GameObject
 
 public:
 	GameObject(const char* texturesheet, int x, int y);
+	GameObject(int x, int y, int width, int height);
 	virtual ~GameObject();
 
-	int getX();
-	int getY();
-	int getHeight();
-	int getWidth();
+	int getX() const;
+	int getY() const;
+	int getHeight() const;
+	int getWidth() const;
 
 	virtual void update();
 	void render();

@@ -3,6 +3,7 @@
 
 #include "SDL.h"
 #include "SDL_image.h"
+#include "SDL_ttf.h"
 #include "GameObject.h"
 #include "TextureManager.h"
 #include <iostream>
@@ -24,6 +25,7 @@ public:
 	void update();
 	void render();
 	void clean();
+	void botLogic();
 	static int getWidth();
 	static int getHeight();
 	static bool objectCanMoveUp(GameObject* obj);
@@ -40,11 +42,9 @@ public:
 private:
 	bool isRunning;
 	SDL_Window* window;
+	TTF_Font* font;
 	static int width;
 	static int height;
-
-	
-	int cnt = 0;
 
 };
 

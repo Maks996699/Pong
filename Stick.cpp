@@ -31,3 +31,4 @@ void Stick::moveDown()
 	destRect.y = ypos;
 }
 
+

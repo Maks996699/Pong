@@ -1,3 +1,6 @@
+//ƒл€ взаимодейсви€ с игрой используютс€ клавиши W и S
+
+
 #include "SDL.h"
 #include "Game.h"
 
@@ -14,7 +17,7 @@ int main(int argc, char* argv[])
 
 	game = new Game();
 
-	game->init("Hi", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 640, false);
+	game->init("Pong", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 640, false);
 
 	while (game->running()) {
 

@@ -13,7 +13,6 @@ public:
 	void moveUP();
 	void moveDown();
 
-
 private:
 	int speed;
 

@@ -1,6 +1,7 @@
 #include "Stick.h"	//
-#include "Ball.h"   //при переносе в хедер - не определяет GameObject
-#include "Game.h"
+#include "Ball.h"   //
+#include "Score.h"  //
+#include "Game.h"   //
 
 int Game::height = 0;
 int Game::width = 0;
@@ -8,6 +9,8 @@ int Game::width = 0;
 Stick* player = nullptr;
 Stick* enemy = nullptr;
 Ball* ball = nullptr;
+Score* playerScore = nullptr;
+Score* enemyScore = nullptr;
 
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
@@ -36,6 +39,11 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	{
 		std::cout << "Subsystems Initialised!..." << std::endl;
 
+		if (TTF_Init() == 0)
+		{
+			std::cout << "TTF is working!" << std::endl;
+		}
+
 		window = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
 		if (window)
 		{
@@ -45,16 +53,24 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 		renderer = SDL_CreateRenderer(window, -1, 0);
 		if (renderer)
 		{
-			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 			std::cout << "Renderer created!" << std::endl;
+		}
+
+		font = TTF_OpenFont("font/comic.ttf", 25);
+		if (font)
+		{
+			std::cout << "Font loaded!" << std::endl;
 		}
 
 		isRunning = true;
 	}
 
-	player = new Stick("assets/BPlayer.png", 20, 0, 20);
-	enemy = new Stick("assets/BPlayer.png", width - 40, 0, 10);
-	ball = new Ball("assets/BBall.png", 400, 300);
+	player = new Stick("assets/WPlayer.png", 20, 0, 20);
+	enemy = new Stick("assets/WPlayer.png", width - 40, 0, 10);
+	playerScore = new Score(font, 255, 255, 255, width / 4 , 20, 25, 40);
+	enemyScore = new Score(font, 255, 255, 255, (width * 3)/4, 20, 25, 40);
+	ball = new Ball("assets/WBall.png", 400, 300);
 
 }
 
@@ -101,30 +117,34 @@ void Game::update()
 	if (checkCollision(enemy, ball))
 		ball->changeStateFromCollisionWithEnemy();
 
-	if (ball->getX() > Game::width -350)
+	botLogic();
+
+	if (ball->getX() == 0)
 	{
-		int deadZone = 10;
-		int posMidStick = enemy->getY() + enemy->getHeight() / 2;
-		if (posMidStick + deadZone > ball->getY())
-		{
-			enemy->moveUP();
-		}
-		else if (posMidStick + deadZone < ball->getY())
-		{
-			enemy->moveDown();
-		}
+		playerScore->addPoint();
+		SDL_Delay(600);
+	}
+	if (ball->getX() + ball->getWidth() == Game::width)
+	{
+		enemyScore->addPoint();
+		SDL_Delay(600);
 	}
 
 	player->update();
+	playerScore->update();
 	enemy->update();
+	enemyScore->update();
 	ball->update();
+
 }
 
 void Game::render()
 {
 	SDL_RenderClear(renderer);
 	player->render();
+	playerScore->render();
 	enemy->render();
+	enemyScore->render();
 	ball->render();
 	SDL_RenderPresent(renderer);
 }
@@ -133,8 +153,32 @@ void Game::clean()
 {
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
+	TTF_CloseFont(font);
+	TTF_Quit();
 	SDL_Quit();
+	delete player;
+	delete playerScore;
+	delete enemy;
+	delete enemyScore;
+	delete ball;
 	std::cout << "Game Cleaned!" << std::endl;
+}
+
+void Game::botLogic()
+{
+	if (ball->getX() > (Game::width * 2) / 3) //
+	{
+		int deadZone = 10;
+		int posHalfStick = enemy->getY() + enemy->getHeight() / 2;
+		if (posHalfStick + deadZone > ball->getY())
+		{
+			enemy->moveUP();
+		}
+		else if (posHalfStick + deadZone < ball->getY())
+		{
+			enemy->moveDown();
+		}
+	}
 }
 
 int Game::getWidth()
